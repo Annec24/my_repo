@@ -1,0 +1,62 @@
+---
+title: "ggplot2"
+author: "Anne"
+date: "October 22, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Learning ggplot2
+
+We're learning ggplot2, It's awesome!
+
+```{r}
+ # note on Windows and linux use double quotes
+#library(tidyverse)
+#library(colorspace)
+#National Parks in California
+ca <- 
+read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/ca.csv") 
+
+#Acadia National Park
+acadia <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/acadia.csv")
+
+#Southeast US National Parks
+se <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/se.csv")
+
+#2016 Visitation for all Pacific West National Parks
+visit_16 <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/visit_16.csv")
+
+#All Nationally designated sites in Massachusetts
+mass <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/mass.csv")
+```
+
+#start with california ('ca') data set
+
+```{r}
+head(ca)
+View(ca)
+```
+
+```{r}
+ggplot(data=ca)+
+  geom_point(aes(x=year,y=visitors))
+```
+
+```{r}
+ggplot(data=ca)+
+  geom_point(aes(x=year,y=visitors,color=park_name))
+```
+
+```{r}
+ggplot(data=ca)+
+  geom_point(aes(x=year,y=visitors,color=park_name))+labs(x="Year", y="Visitation", title= "California Nation Park Visitation")+ theme_bw()+theme(legend.title=element_blank())
+
+```
+
+```{r}
+ggplot(data=se)+ geom_point(aes(x=year, y=visitors,color=state))+labs(x="Year", y="Visitation",title="Southeast Region National Park Visitation")+theme(legend.title=element_blank(),axis.text.x =element_text(angle=45, size=14) )
+```
