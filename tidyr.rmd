@@ -1,0 +1,93 @@
+---
+title: "tidyr"
+author: "Anne"
+date: "October 23, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+```{r}
+## read in gapminder data in wide format
+gap_wide <- readr::read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder_wide.csv')
+
+```
+##tidyr::gather()
+```{r}
+gap_long <- gap_wide %>% 
+  gather(key=obstype_year,
+         value=obs_values,
+         -continent,-country)#add more, keep countinent and country
+```
+##tidyr::separated()
+```{r}
+gap_long <- gap_wide %>% 
+  gather(key=obstype_year,
+         value=obs_values,
+         -continent,-country) %>% 
+  separate(col=obstype_year, 
+           into=c("obs_type","year"),
+           sep="_",
+           convert=TRUE)#seperate at the underscore
+```
+
+
+## Plot long data
+
+```{r}
+canada_df <- gap_long %>% 
+  filter(country=="Canada", 
+         obs_type=="lifeExp")
+
+ggplot(data=canada_df, aes(x=year, y=obs_values))+
+  geom_line()
+```
+
+##Plot the life expectancy of all countries in the Americas
+```{r}
+life_df <- gap_long %>% 
+  filter(obs_type=="lifeExp",
+         continent=="Americas")
+ggplot(data=life_df, aes(x=year, y=obs_values, color=country))+
+  geom_line()
+```
+#ex mean life exp using gap_long calc and plot the mean life exp for each continent over time form 1982 to 2007 
+```{r}
+continents <- gap_long %>% 
+  filter(obs_type=="lifeExp",
+         year>1980) %>% #use "year>1979&year<2006"
+  group_by(continent, year) %>% 
+  summarize(mean_le =mean(obs_values))
+##plot using ggplot
+ggplot(data=continents, aes(x=year, y=mean_le, color=continent))+
+  geom_line() +
+  labs(x="Year",
+       y="Age(years)",
+       title="Mean life expectancy")+
+  theme_bw()
+```
+##spread()
+```{r}
+gap_normal <- gap_long %>% 
+  spread(key=obs_type,
+         value=obs_values)
+```
+## convert "gap_long" all the way back to gap_wide.  create appropriate labels for all our new variables (time*metric combinations) with the opposite of separate: tidyr::unite()
+
+```{r}
+gap_wide_new <- gap_long %>% 
+  unite(col=var_names, obs_type, year, sep="_") %>% 
+  spread(key=var_names, value=obs_values)
+```
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
