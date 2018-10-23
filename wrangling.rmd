@@ -148,7 +148,7 @@ lj %>% View()
 
 ## right_join gap_2007 and co2
 rj <- right_join(gap_2007, co2, by = "country")
-#the same as , just different posions
+#the same as , just different positions
 lj2 <- left_join(co2,gap_2007, by ="country")
 ## explore
 rj %>% dim() # 12
